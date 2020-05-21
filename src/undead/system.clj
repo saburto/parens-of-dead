@@ -1,11 +1,7 @@
 (ns undead.system
   (:require [org.httpkit.server :refer [run-server]]
+            [undead.web :refer [app]]
             [com.stuartsierra.component :as component]))
-
-(defn app [req]
-  {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body    "hello UNDEAD 2!"})
 
 (defn- start-server [handler port]
   (let [server (run-server handler {:port port})]
