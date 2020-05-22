@@ -10,9 +10,10 @@
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.764"]
                  [reagent "0.10.0"]]
-  :profiles {:dev {:plugins [[lein-cljsbuild "1.1.8"]
-                             [lein-figwheel "0.5.20"]]
-                   :dependencies [[reloaded.repl "0.2.4"]]
+  :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]}
+  :profiles {:dev {:dependencies [[com.bhauman/rebel-readline-cljs "0.1.4"]
+                                  [com.bhauman/figwheel-main "0.2.5"]
+                                  [reloaded.repl "0.2.4"]]
                    :source-paths ["dev"]
                    :cljsbuild {:builds [{:id "parens-of-dead"
                                          :source-paths ["src" "dev"]

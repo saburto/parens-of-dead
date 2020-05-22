@@ -1,0 +1,4 @@
+{:main undead.client
+ :output-to "target/classes/public/app.js"
+ :output-dir "target/classes/public/out"
+ :asset-path "out"}
