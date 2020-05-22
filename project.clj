@@ -11,7 +11,8 @@
                  [org.clojure/clojurescript "1.10.764"]
                  [reagent "0.10.0"]]
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]}
-  :profiles {:dev {:dependencies [[com.bhauman/rebel-readline-cljs "0.1.4"]
+  :profiles {:dev {:plugins [[jonase/eastwood "0.3.10"]]
+                   :dependencies [[com.bhauman/rebel-readline-cljs "0.1.4"]
                                   [com.bhauman/figwheel-main "0.2.5"]
                                   [reloaded.repl "0.2.4"]]
                    :source-paths ["dev"]
