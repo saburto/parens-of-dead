@@ -12,3 +12,4 @@ pom.xml.asc
 .hg/
 *.log
 /.rebel_readline_history
+/.eastwood

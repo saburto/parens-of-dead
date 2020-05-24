@@ -57,3 +57,26 @@
                :tiles
                (filter :revealed?)
                (set))))
+
+(deftest foggy-game
+  (expect (->> (create-game)
+                    (reveal-one :fg)
+                    (reveal-one :fg)
+                    :foggy?)))
+
+(deftest zoombies-in-sand
+  (expect [:zoombie :zoombie :zoombie :remaining] (->> (create-game)
+               (reveal-one :zo)
+               (reveal-one :zo)
+               :sand
+               (take 4))))
+
+(deftest more-zoombies
+  (expect
+   {:h1 2 :h2 2 :h3 2 :h4 2 :h5 2 :fg 2 :zo 4}
+   (->> (create-game)
+        (reveal-one :zo)
+        (reveal-one :zo)
+        :tiles
+        (map :face)
+        frequencies)))
