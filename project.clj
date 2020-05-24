@@ -9,7 +9,8 @@
                  [http-kit "2.3.0"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.764"]
-                 [reagent "0.10.0"]]
+                 [reagent "0.10.0"]
+                 [expectations/clojure-test "1.2.1"]]
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]}
   :profiles {:dev {:plugins [[jonase/eastwood "0.3.10"]]
                    :dependencies [[com.bhauman/rebel-readline-cljs "0.1.4"]
