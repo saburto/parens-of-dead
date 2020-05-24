@@ -29,34 +29,34 @@
                  :tiles (filter :revealed?) count)))
 
 (deftest two-reveal
-  (expect #{{:face :h1 :revealed? true}
-            {:face :h2 :revealed? true}}
+  (expect [:h1 :h2]
           (->> (create-game)
                (reveal-one :h1)
                (reveal-one :h2)
                (reveal-one :h3)
                :tiles
                (filter :revealed?)
-               (set))))
+               (map :face)
+               (sort))))
 
 (deftest matching-pair
-  (expect [{:face :h1 :matched? true}
-            {:face :h1 :matched? true}]
+  (expect [:h1 :h1]
           (->> (create-game)
                (reveal-one :h1)
                (reveal-one :h1)
                :tiles
-               (filter :matched?))))
+               (filter :matched?)
+               (map :face))))
 
 (deftest after-matched-one-revealed
-  (expect #{{:face :h3 :revealed? true}}
+  (expect [:h3]
           (->> (create-game)
                (reveal-one :h1)
                (reveal-one :h1)
                (reveal-one :h3)
                :tiles
                (filter :revealed?)
-               (set))))
+               (map :face))))
 
 (deftest foggy-game
   (expect (->> (create-game)
@@ -102,3 +102,14 @@
 (deftest prep-ids
   (expect (range 0 16)
           (->> (create-game) prep :tiles (map :id))))
+
+(deftest tick-cancelment
+  (expect 0 (->> (create-game)
+                 (reveal-one :h1)
+                 (reveal-one :h2)
+                 tick tick tick
+                 :tiles
+                 (filter :revealed?)
+                 count)))
+
+

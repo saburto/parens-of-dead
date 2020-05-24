@@ -62,11 +62,24 @@
         (perfom-match-actions match))
       game))
 
+(defn- init-cancelment [tiles]
+  (mapv (fn [tile]
+          (if (:revealed? tile)
+            (assoc tile :canceal-countdown 3)
+            tile))
+        tiles))
+
+(defn- check-for-canelment [game]
+  (if-not (can-reveal? game)
+    (update-in game [:tiles] init-cancelment)
+    game))
+
 (defn reveal-tile [game index]
   (if (can-reveal? game)
     (-> game
         (assoc-in [:tiles index :revealed?] true)
-        (check-for-match))
+        (check-for-match)
+        (check-for-canelment))
     game))
 
 (defn- assoc-ids [tiles]
@@ -84,3 +97,15 @@
   (-> game
       (update-in [:tiles] assoc-ids)
       (update-in [:tiles] hide-faces)))
+
+(defn- cancel-faces [tiles]
+  (mapv (fn [tile]
+          (case (:canceal-countdown tile)
+            nil tile
+            1 (dissoc tile :canceal-countdown :revealed?)
+            (update tile :canceal-countdown dec)))
+        tiles))
+
+(defn tick [game]
+  (-> game
+      (update-in [:tiles] cancel-faces)))
