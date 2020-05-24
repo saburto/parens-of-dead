@@ -15,5 +15,5 @@
 
       (loop []
         (when-let [game (:message (<! ws-channel))]
-          (render-game game main-container)
+          (render-game game main-container ws-channel)
           (recur))))))

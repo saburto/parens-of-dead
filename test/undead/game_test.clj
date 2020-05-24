@@ -80,3 +80,25 @@
         :tiles
         (map :face)
         frequencies)))
+
+(deftest add-id-faces
+  (expect {nil 16}
+          (->> (create-game)
+               prep
+               :tiles
+               (map :face)
+               frequencies)))
+
+(deftest prep-after-reveal-on
+  (expect {nil 15, :h1 1}
+          (->> (create-game) (reveal-one :h1)
+               prep :tiles (map :face) frequencies)))
+
+(deftest prep-after-reveal-two
+  (expect {nil 14, :h1 2}
+          (->> (create-game) (reveal-one :h1) (reveal-one :h1)
+               prep :tiles (map :face) frequencies)))
+
+(deftest prep-ids
+  (expect (range 0 16)
+          (->> (create-game) prep :tiles (map :id))))

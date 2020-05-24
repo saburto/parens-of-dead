@@ -1,6 +1,7 @@
 (ns undead.game)
 
-(def faces [:h1 :h1 :h2 :h2 :h3 :h3 :h4 :h4 :h5 :h5 :fg :fg :zo :zo :zo :gy])
+(def faces [:h1 :h1 :h2 :h2 :h3 :h3 :h4 :h4 :h5 :h5
+            :fg :fg :zo :zo :zo :gy])
 
 
 (defn- ->tile [face]
@@ -67,3 +68,19 @@
         (assoc-in [:tiles index :revealed?] true)
         (check-for-match))
     game))
+
+(defn- assoc-ids [tiles]
+  (map-indexed #(assoc %2 :id %1) tiles))
+
+(defn- hide-faces [tiles]
+  (mapv (fn [tile]
+          (if (or (:revealed? tile)
+                  (:matched? tile))
+            tile
+            (dissoc tile :face)))
+        tiles))
+
+(defn prep [game]
+  (-> game
+      (update-in [:tiles] assoc-ids)
+      (update-in [:tiles] hide-faces)))
