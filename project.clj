@@ -13,6 +13,7 @@
                  [expectations/clojure-test "1.2.1"]]
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]}
   :profiles {:dev {:plugins [[jonase/eastwood "0.3.10"]]
+                   :eastwood {:exclude-linters [:constant-test]}
                    :dependencies [[com.bhauman/rebel-readline-cljs "0.1.4"]
                                   [com.bhauman/figwheel-main "0.2.5"]
                                   [reloaded.repl "0.2.4"]]
