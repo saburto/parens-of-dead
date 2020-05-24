@@ -1,12 +1,15 @@
 (ns undead.web
-  (:require [compojure.core :refer [defroutes GET]]
-            [compojure.route :refer [resources]]))
+  (:require [chord.http-kit :refer [with-channel]]
+            [compojure.core :refer [defroutes GET]]
+            [compojure.route :refer [resources]]
+            [clojure.core.async :refer [>! <! go]]
+            [undead.game :refer [create-game reveal-tile]]))
 
-(defn index [req]
-  {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body    "hello from compojure !"})
+(defn- ws-handler [req]
+  (with-channel req ws-channel
+    (go
+        (>! ws-channel (create-game)))))
 
 (defroutes app
-  (GET "/" [] index)
+  (GET "/ws" [] ws-handler)
   (resources "/"))
