@@ -1,7 +1,7 @@
 (ns undead.client
   (:require [reagent.dom :as rdom]))
 
-(def game {:board [{:face :h1} {:face :h1} {:face :h2} {:face :h2 :revealed? true}
+(def game {:tiles [{:face :h1} {:face :h1} {:face :h2} {:face :h2 :revealed? true}
                    {:face :h3} {:face :h3} {:face :h4 :matched? true} {:face :h4 :matched? true}
                    {:face :h5} {:face :h5} {:face :fg} {:face :fg}
                    {:face :zo} {:face :zo :matched? true} {:face :zo :matched? true} {:face :gy}]
@@ -9,20 +9,20 @@
                          (repeat 20 :remaining))
            :foggy? false})
 
-(defn cell-component [cell]
+(defn cell-component [tile]
   [:div.cell
    [:div {:class (str "tile"
-                      (when (:revealed? cell) " revealed")
-                      (when (:matched? cell) " matched"))}
+                      (when (:revealed? tile) " revealed")
+                      (when (:matched? tile) " matched"))}
     [:div.front]
-    [:div {:class (str "back " (name (:face cell)))}]]])
+    [:div {:class (str "back " (name (:face tile)))}]]])
 
-(defn line-component [cells]
-  [:div.line (map cell-component cells)])
+(defn line-component [tiles]
+  [:div.line (map cell-component tiles)])
 
-(defn board-component [cells]
+(defn board-component [tiles]
   [:div {:class "board clearfix"}
-   (map line-component (partition 4 cells))])
+   (map line-component (partition 4 tiles))])
 
 (defn sand-component [sand]
   [:div {:class (str "sand " (name sand))}])
@@ -36,7 +36,7 @@
 
 (defn game-component [game]
   [:div {:class (when (:foggy? game) "foggy")}
-   (board-component (:board game))
+   (board-component (:tiles game))
    (timers-component (:sand game))])
 
 (rdom/render (game-component game)
