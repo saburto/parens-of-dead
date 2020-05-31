@@ -3,7 +3,6 @@
 (def faces [:h1 :h1 :h2 :h2 :h3 :h3 :h4 :h4 :h5 :h5
             :fg :fg :zo :zo :zo :gy])
 
-
 (defn- ->tile [face]
   {:face face})
 
@@ -63,10 +62,10 @@
 
 (defn- init-cancelment [tile]
   (if (:revealed? tile)
-    (assoc tile :canceal-countdown 3)
+    (assoc tile :conceal-countdown 5)
     tile))
 
-(defn- check-for-canelment [game]
+(defn- check-for-concealment [game]
   (if-not (can-reveal? game)
     (update-tiles game init-cancelment)
     game))
@@ -76,7 +75,7 @@
     (-> game
         (assoc-in [:tiles index :revealed?] true)
         (check-for-match)
-        (check-for-canelment))
+        (check-for-concealment))
     game))
 
 (defn- assoc-ids [tiles]
@@ -84,7 +83,8 @@
 
 (defn- hide-faces [tile]
   (if (or (:revealed? tile)
-          (:matched? tile))
+          (:matched? tile)
+          (:conceal-countdown tile))
     tile
     (dissoc tile :face)))
 
@@ -93,12 +93,13 @@
       (update-in [:tiles] assoc-ids)
       (update-tiles hide-faces)))
 
-(defn- cancel-faces [tile]
-  (case (:canceal-countdown tile)
+(defn- conceal-face [tile]
+  (case (:conceal-countdown tile)
     nil tile
-    1 (dissoc tile :canceal-countdown :revealed?)
-    (update tile :canceal-countdown dec)))
+    3 (-> tile (dissoc :revealed?) (update :conceal-countdown dec))
+    1 (dissoc tile :conceal-countdown)
+    (update tile :conceal-countdown dec)))
 
 (defn tick [game]
   (-> game
-      (update-tiles cancel-faces)))
+      (update-tiles conceal-face)))

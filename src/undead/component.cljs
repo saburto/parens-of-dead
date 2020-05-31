@@ -2,23 +2,22 @@
   (:require [cljs.core.async :refer [put!]]
             [reagent.dom :as rdom]))
 
-(defn cell-component [id tile reveal-ch]
-  [:div.cell {:key id :id id}
-   [:div {:class (str "tile"
-                      (when (:revealed? tile) " revealed")
-                      (when (:matched? tile) " matched"))
-          :on-click #(put! reveal-ch id)
-          }
-    [:div.front]
-    [:div {:class (str "back " (when (:face tile)
-                                 (name (:face tile))))}]]])
+(defn cell-component [tile reveal-ch]
+  (let [id (:id tile)]
+    [:div.cell {:key id :id id}
+     [:div {:class (str "tile"
+                        (when (:revealed? tile) " revealed")
+                        (when (:matched? tile) " matched"))
+            :on-click #(put! reveal-ch id)
+            }
+      [:div.front]
+      [:div {:class (str "back " (when (:face tile)
+                                   (name (:face tile))))}]]]))
 
 (defn line-component [index tiles reveal-ch]
   (let [row-index (* 4 index)]
-    [:div.line {:id row-index
-                :key row-index}
-     (map-indexed #(cell-component (+ row-index %1) %2 reveal-ch) tiles)])
-    )
+    [:div.line {:key row-index}
+     (map-indexed #(cell-component %2 reveal-ch) tiles)]))
 
 (defn board-component [tiles reveal-ch]
   [:div {:class "board clearfix"}

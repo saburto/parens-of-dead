@@ -1,17 +1,12 @@
 (ns undead.web
   (:require [chord.http-kit :refer [with-channel]]
             [compojure.core :refer [defroutes GET]]
-            [compojure.route :refer [resources]]
-            [clojure.core.async :refer [>! <! go]]
-            [undead.game :refer [create-game prep reveal-tile]]))
+            [undead.game-loop :refer [start-game-loop]]
+            [compojure.route :refer [resources]]))
 
 (defn- ws-handler [req]
   (with-channel req ws-channel
-    (go
-      (loop [game (create-game)]
-        (>! ws-channel (prep game))
-        (when-let [tile-index (:message (<! ws-channel))]
-          (recur (reveal-tile game tile-index)))))))
+    (start-game-loop ws-channel)))
 
 (defroutes app
   (GET "/ws" [] ws-handler)
