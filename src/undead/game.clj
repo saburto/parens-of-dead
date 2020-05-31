@@ -12,7 +12,8 @@
 (defn create-game []
   {:tiles (shuffle (map ->tile faces))
    :sand (repeat 30 :remaining)
-   :foggy? false})
+   :foggy? false
+   :ticks 0})
 
 (defn- revealed-tiles [game]
   (->> game :tiles (filter :revealed?)))
@@ -34,11 +35,12 @@
       (:face (first rtiles)))))
 
 (defn- replace-remaining [sand replacement]
-  (concat
-   (take-while (complement #{:remaining}) sand)
-   replacement
-   (->> (drop-while (complement #{:remaining}) sand)
-        (drop (count replacement)))))
+  (take (count sand)
+        (concat
+         (take-while (complement #{:remaining}) sand)
+         replacement
+         (->> (drop-while (complement #{:remaining}) sand)
+              (drop (count replacement))))))
 
 (defn- wake-the-dead [tile]
   (if (= :gy (:face tile))
@@ -100,6 +102,15 @@
     1 (dissoc tile :conceal-countdown)
     (update tile :conceal-countdown dec)))
 
+(defn- count-down-sand [game]
+  (if (= 0 (mod (:ticks game) 5))
+    (update game :sand #(replace-remaining % [:gone]))
+    game))
+
 (defn tick [game]
-  (-> game
-      (update-tiles conceal-face)))
+  (if (not-any? #{:remaining} (:sand game))
+    (assoc game :dead? true)
+    (-> game
+        (update :ticks inc)
+        (count-down-sand)
+        (update-tiles conceal-face))))

@@ -112,4 +112,23 @@
                  (filter :revealed?)
                  count)))
 
+(defn tick-n [n game]
+  (first (drop n (iterate tick game))))
 
+(deftest gone-sand
+  (expect [:gone :remaining]
+          (->> (create-game)
+               (tick-n 5)
+               :sand (take 2))))
+
+
+(deftest all-sand-to-be-gone
+  (expect {:gone 30}
+          (->> (create-game)
+               (tick-n 150)
+               :sand frequencies)))
+
+(deftest dead-when-all-sand-gone
+  (expect (->> (create-game)
+               (tick-n 155)
+               :dead?)))
