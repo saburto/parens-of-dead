@@ -132,3 +132,50 @@
   (expect (->> (create-game)
                (tick-n 155)
                :dead?)))
+
+(defn- reveal-two [face game]
+  (->> game
+       (reveal-one face)
+       (reveal-one face)))
+
+(defn- reveal-all-houses [game]
+  (->> game
+       (reveal-two :h1)
+       (reveal-two :h2)
+       (reveal-two :h3)
+       (reveal-two :h4)
+       (reveal-two :h5)))
+
+(deftest reveal-all-houses-go-to-safe
+  (expect (not (->> (create-game)
+                   (reveal-all-houses)
+                   tick tick
+                   :safe?))))
+
+(deftest second-round
+  (expect 60 (->> (create-game)
+                   (reveal-all-houses)
+                   tick tick tick
+                   :sand
+                   count)))
+
+(deftest thrid-round
+  (expect 90 (->> (create-game)
+                  (reveal-all-houses) tick tick tick
+                  (reveal-all-houses) tick tick tick
+                  :sand
+                  count)))
+
+(deftest after-three-round-safe
+  (expect (->> (create-game)
+                  (reveal-all-houses) tick tick tick
+                  (reveal-all-houses) tick tick tick
+                  (reveal-all-houses) tick tick tick
+                  :safe?)))
+
+(deftest second-round-board-empty
+  (expect empty? (->> (create-game)
+                  (reveal-all-houses)
+                  tick tick tick
+                  :tiles
+                  (filter :matched?))))
